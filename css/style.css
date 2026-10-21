@@ -1,6 +1,7 @@
 /* ============================================================
    思维塾 MindDojo · 样式表
    原则：手机优先 · 阅读舒适 · 内容优先 · 无外部字体依赖
+   桌面端（≥900px）：顶部导航、宽容器、卡片网格、两栏布局
    ============================================================ */
 
 :root {
@@ -11,14 +12,18 @@
   --ink-3: #8b949e;
   --line: #e5e8ec;
   --brand: #2f5d8a;        /* 靛蓝主色 */
+  --brand-2: #3a7ca5;
   --brand-soft: #e8f0f8;
   --accent: #e8883a;       /* 橙，用于进度/完成 */
   --ok: #2ea36a;
   --warn: #c2571f;
   --radius: 14px;
+  --radius-lg: 18px;
   --shadow: 0 1px 3px rgba(31,35,40,.06), 0 4px 14px rgba(31,35,40,.05);
+  --shadow-lg: 0 2px 6px rgba(31,35,40,.07), 0 12px 32px rgba(31,35,40,.08);
   --nav-h: 60px;
   --top-h: 52px;
+  --maxw: 1080px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,7 +38,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ---------- 顶部栏 ---------- */
+/* ============================================================
+   顶部栏
+   ============================================================ */
 #topbar {
   position: sticky; top: 0; z-index: 50;
   height: var(--top-h);
@@ -54,8 +61,13 @@ body {
   border: none; border-radius: 999px; padding: 5px 12px; font-size: 12px; cursor: pointer;
 }
 
-/* ---------- 页面容器 ---------- */
-#page { max-width: 720px; margin: 0 auto; padding: 16px 16px 8px; }
+/* 桌面顶部导航（默认隐藏，手机用底部导航） */
+#topNav { display: none; }
+
+/* ============================================================
+   页面容器
+   ============================================================ */
+#page { max-width: var(--maxw); margin: 0 auto; padding: 16px 16px 8px; }
 
 /* 卡片 */
 .card {
@@ -75,16 +87,23 @@ body {
 .muted { color: var(--ink-3); font-size: 12.5px; }
 .small { font-size: 13px; }
 
-/* slogan 条 */
+/* hero */
 .hero {
   background: linear-gradient(135deg, #2f5d8a 0%, #3a7ca5 100%);
   color: #fff;
-  border-radius: var(--radius);
-  padding: 22px 18px;
-  margin-bottom: 14px;
+  border-radius: var(--radius-lg);
+  padding: 26px 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-lg);
 }
-.hero .slogan { font-size: 19px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
-.hero .sub { color: rgba(255,255,255,.85); margin-bottom: 0; }
+.hero .slogan { font-size: 21px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; }
+.hero .sub { color: rgba(255,255,255,.88); margin-bottom: 0; font-size: 14.5px; }
+
+/* hero 数据条（桌面特色：大数字） */
+.hero-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 18px; }
+.hero-stats .chip { display: flex; flex-direction: column; }
+.hero-stats .n { font-size: 30px; font-weight: 900; line-height: 1.1; }
+.hero-stats .l { font-size: 12px; color: rgba(255,255,255,.8); }
 
 /* 按钮 */
 .btn {
@@ -97,16 +116,18 @@ body {
 .btn.ghost { background: transparent; color: var(--brand); border: 1px solid var(--brand); }
 .btn.ok { background: var(--ok); }
 .btn.soft { background: var(--brand-soft); color: var(--brand); }
+.btn.white { background: #fff; color: var(--brand); }
 
-/* 入口网格（首页） */
+/* 入口网格 */
 .entry-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
 .entry {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 14px 8px; text-align: center; cursor: pointer; box-shadow: var(--shadow);
+  padding: 16px 8px; text-align: center; cursor: pointer; box-shadow: var(--shadow);
+  transition: transform .12s, box-shadow .12s;
 }
-.entry .ico { font-size: 26px; display: block; margin-bottom: 6px; }
-.entry .t { font-size: 13.5px; font-weight: 600; }
-.entry:active { transform: scale(.97); }
+.entry:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.entry .ico { font-size: 28px; display: block; margin-bottom: 6px; }
+.entry .t { font-size: 14px; font-weight: 600; }
 
 /* 板块进度 */
 .board-progress { margin-bottom: 10px; }
@@ -114,12 +135,14 @@ body {
 .board-progress .bar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; }
 .board-progress .bar > i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width .3s; }
 
-/* 工具卡（地图） */
+/* 工具卡 */
 .tool-card {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow); padding: 14px; margin-bottom: 10px; cursor: pointer;
   display: flex; align-items: center; gap: 12px;
+  transition: transform .12s, box-shadow .12s;
 }
+.tool-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .tool-card .num {
   flex: 0 0 40px; height: 40px; border-radius: 10px;
   background: var(--brand-soft); color: var(--brand);
@@ -130,7 +153,7 @@ body {
 .tool-card .name { font-weight: 700; font-size: 15.5px; margin-bottom: 2px; }
 .tool-card .def { color: var(--ink-2); font-size: 13px; line-height: 1.5;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.tool-card .marks { display: flex; gap: 6px; margin-top: 6px; }
+.tool-card .marks { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
 .tag { font-size: 11px; border-radius: 999px; padding: 2px 8px; background: var(--line); color: var(--ink-2); }
 .tag.done { background: #e3f5ea; color: var(--ok); }
 .tag.todo { background: #fff2e5; color: var(--warn); }
@@ -139,7 +162,7 @@ body {
 .board-head {
   display: flex; align-items: center; gap: 8px;
   font-size: 15px; font-weight: 800; color: var(--brand);
-  margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--brand-soft);
+  margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--brand-soft);
 }
 .board-head .n { background: var(--brand); color: #fff; border-radius: 6px; font-size: 11px; padding: 2px 7px; }
 
@@ -233,10 +256,101 @@ body {
 .nav-item.active { color: var(--brand); }
 .nav-item.active span { font-weight: 700; }
 
-/* 桌面端微调 */
-@media (min-width: 860px) {
-  #page { max-width: 760px; }
-  body { padding-bottom: 24px; }
-  #bottomNav { max-width: 520px; left: 50%; transform: translateX(-50%);
-    border-radius: 18px 18px 0 0; border: 1px solid var(--line); border-bottom: none; }
+/* ============================================================
+   桌面端（≥900px）：Ben 式宽屏体验
+   ============================================================ */
+@media (min-width: 900px) {
+  body { padding-bottom: 48px; }
+
+  /* 顶部导航条 */
+  #topbar {
+    padding: 0 32px;
+    justify-content: space-between;
+  }
+  #topNav {
+    display: flex; gap: 4px;
+    margin-left: 40px;
+  }
+  .top-nav-item {
+    border: none; background: none; cursor: pointer;
+    font-size: 15px; color: var(--ink-2); font-weight: 600;
+    padding: 8px 16px; border-radius: 999px;
+    transition: background .12s, color .12s;
+  }
+  .top-nav-item:hover { background: var(--brand-soft); color: var(--brand); }
+  .top-nav-item.active { background: var(--brand-soft); color: var(--brand); }
+
+  /* 隐藏手机底部导航 */
+  #bottomNav { display: none; }
+
+  #page { padding: 28px 32px 40px; }
+
+  /* hero 放大 */
+  .hero {
+    padding: 40px 36px;
+    border-radius: 20px;
+  }
+  .hero .slogan { font-size: 30px; margin-bottom: 10px; }
+  .hero .sub { font-size: 16px; max-width: 640px; }
+  .hero-stats .n { font-size: 40px; }
+  .hero-stats .l { font-size: 13px; }
+
+  .h1 { font-size: 28px; }
+  .h2 { font-size: 20px; }
+  .sub { font-size: 15px; }
+
+  /* 入口卡更大 */
+  .entry-grid { gap: 14px; margin: 18px 0; }
+  .entry { padding: 22px 12px; border-radius: var(--radius-lg); }
+  .entry .ico { font-size: 34px; margin-bottom: 8px; }
+  .entry .t { font-size: 16px; }
+
+  /* 两栏（首页：今日练习 + 进度） */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .two-col .card { margin-bottom: 0; }
+
+  /* 工具地图：两列网格 */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .tools-grid .tool-card { margin-bottom: 0; height: 100%; }
+
+  /* 工具详情：左内容右标记 */
+  .detail-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .detail-layout .card { margin-bottom: 0; }
+  .side-sticky { position: sticky; top: calc(var(--top-h) + 16px); }
+
+  /* 我的：两栏 */
+  .mine-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .mine-layout .card { margin-bottom: 0; }
+
+  /* 检测题更宽更有呼吸感 */
+  .quiz-opt { padding: 14px 18px; font-size: 15px; }
+  .quiz-q { font-size: 17px; }
+
+  .stat-grid { grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .stat { padding: 20px; }
+  .stat .n { font-size: 32px; }
+}
+
+/* 超宽屏（≥1400px）再放宽 */
+@media (min-width: 1400px) {
+  :root { --maxw: 1180px; }
+  .tools-grid { grid-template-columns: repeat(3, 1fr); }
 }

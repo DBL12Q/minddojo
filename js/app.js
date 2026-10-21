@@ -107,7 +107,7 @@
   function highlightNav(p) {
     const map = { home: "home", tools: "tools", tool: "tools", daily: "daily", quiz: "quiz", mine: "mine", about: "mine" };
     const active = map[p] || "home";
-    document.querySelectorAll(".nav-item").forEach((b) => {
+    document.querySelectorAll(".nav-item, .top-nav-item").forEach((b) => {
       b.classList.toggle("active", b.dataset.nav === active);
     });
   }
@@ -134,6 +134,12 @@
       <div class="hero">
         <div class="slogan">${esc(SITE.slogan)}</div>
         <div class="sub">把《逻辑思维》里的思维工具，练成你自己的本能。每天一个练习，越用越聪明。</div>
+        <div class="hero-stats">
+          <div class="chip"><span class="n">${TOOLS.length}</span><span class="l">思维工具</span></div>
+          <div class="chip"><span class="n">${BOARDS.length}</span><span class="l">训练板块</span></div>
+          <div class="chip"><span class="n">${QUIZ.length}</span><span class="l">陷阱检测题</span></div>
+          <div class="chip"><span class="n">每天</span><span class="l">一个新练习</span></div>
+        </div>
       </div>
 
       <div class="entry-grid">
@@ -142,26 +148,39 @@
         <div class="entry" data-go="quiz"><span class="ico">🛡️</span><span class="t">陷阱检测</span></div>
       </div>
 
-      <div class="card">
-        <div class="h3">今日练习</div>
-        <div class="muted" style="margin:4px 0 10px">随机抽取 · ${esc(SITE.updated)}</div>
-        <div class="daily-box">
-          <div class="tool-name">${esc(t.name)}</div>
-          <div class="p-text">${esc(p.text)}</div>
-          ${doneToday ? '<div class="done-note">✅ 今天已练过这个练习，明天再来。</div>'
-            : `<button class="btn block" data-do="${t.id}|${pIdx}" data-daily="1">标记完成</button>`}
+      <div class="two-col">
+        <div class="card">
+          <div class="h3">今日练习</div>
+          <div class="muted" style="margin:4px 0 10px">随机抽取 · 每天固定一个</div>
+          <div class="daily-box">
+            <div class="tool-name">${esc(t.name)}</div>
+            <div class="p-text">${esc(p.text)}</div>
+            ${doneToday ? '<div class="done-note">✅ 今天已练过这个练习，明天再来。</div>'
+              : `<button class="btn block" data-do="${t.id}|${pIdx}" data-daily="1">标记完成</button>`}
+            <div class="mt12"><button class="btn ghost block" data-tool="${t.id}">查看完整卡片</button></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="h3">我的进度</div>
+          <div class="board-progress" style="margin-top:8px">
+            <div class="row"><span><strong>总进度</strong></span><span class="muted">${total}%</span></div>
+            <div class="bar"><i style="width:${total}%"></i></div>
+          </div>
+          <div class="divider"></div>
+          ${boardRows}
+          <div class="mt12"><button class="btn ghost block" data-go="mine">查看我的清单</button></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="h2" style="margin-top:0">我的进度</div>
-        <div class="board-progress">
-          <div class="row"><span><strong>总进度</strong></span><span class="muted">${total}%</span></div>
-          <div class="bar"><i style="width:${total}%"></i></div>
+        <div class="h2" style="margin-top:0">怎么用？三步开始</div>
+        <div class="entry-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="entry" data-go="tools"><span class="ico">📖</span><span class="t">读完章节</span></div>
+          <div class="entry" data-go="daily"><span class="ico">✍️</span><span class="t">每天一练</span></div>
+          <div class="entry" data-go="quiz"><span class="ico">🛡️</span><span class="t">测测陷阱</span></div>
         </div>
-        <div class="divider"></div>
-        ${boardRows}
-        <div class="mt12"><button class="btn ghost block" data-go="mine">查看我的清单</button></div>
+        <p class="muted" style="margin-top:8px">1. 跟着读书会读完一章 → 2. 来工具地图打卡对应工具 → 3. 用陷阱检测检验自己有没有真的学会。</p>
       </div>
     `;
   }
@@ -187,7 +206,8 @@
         </div>`;
       }).join("");
       const v = pct(boardProgress(b.id));
-      return `<div class="board-head"><span class="n">${b.n}</span>${esc(b.name)}<span class="muted small" style="margin-left:auto">${esc(b.books)} · ${v}%</span></div>${cards}`;
+      return `<div class="board-head"><span class="n">${b.n}</span>${esc(b.name)}<span class="muted small" style="margin-left:auto">${esc(b.books)} · ${v}%</span></div>
+        <div class="tools-grid">${cards}</div>`;
     }).join("");
 
     return `
@@ -217,31 +237,40 @@
     }).join("");
 
     return `
-      <div class="card detail">
-        <div class="muted" style="margin-bottom:4px">${esc(b.n)} ${esc(b.name)} · ${esc(b.books)}</div>
-        <div class="h1" style="margin-bottom:8px">${esc(t.name)}</div>
-        <div class="def-big">${esc(t.def)}</div>
-      </div>
+      <div class="detail-layout">
+        <div>
+          <div class="card detail">
+            <div class="muted" style="margin-bottom:4px">${esc(b.n)} ${esc(b.name)} · ${esc(b.books)}</div>
+            <div class="h1" style="margin-bottom:8px">${esc(t.name)}</div>
+            <div class="def-big">${esc(t.def)}</div>
+          </div>
 
-      <div class="card detail">
-        <div class="field"><div class="label">生活中的例子</div><p class="body">${esc(t.example)}</p></div>
-        <div class="field"><div class="label">什么时候用</div><p class="body small">${esc(t.whenUse)}</p></div>
-        <div class="field"><div class="label">什么时候别用</div><p class="body small">${esc(t.whenNot)}</p></div>
-      </div>
+          <div class="card detail">
+            <div class="field"><div class="label">生活中的例子</div><p class="body">${esc(t.example)}</p></div>
+            <div class="field"><div class="label">什么时候用</div><p class="body small">${esc(t.whenUse)}</p></div>
+            <div class="field"><div class="label">什么时候别用</div><p class="body small">${esc(t.whenNot)}</p></div>
+          </div>
 
-      <div class="card detail">
-        <div class="h2" style="margin-top:0">练习区</div>
-        ${practices}
-      </div>
-
-      <div class="card">
-        <div class="h3">我的标记</div>
-        <div class="mark-row">
-          <button class="mark-btn ${doneTool ? "on" : ""}" data-mark="doneTool" data-t="${t.id}">✅ 已做到</button>
-          <button class="mark-btn ${todo ? "on" : ""}" data-mark="todo" data-t="${t.id}">📌 加入待做</button>
-          <button class="mark-btn fav ${fav ? "on" : ""}" data-mark="fav" data-t="${t.id}">⭐ 收藏</button>
+          <div class="card detail">
+            <div class="h2" style="margin-top:0">练习区</div>
+            ${practices}
+          </div>
         </div>
-        <div class="muted mt8">已做到记 1 分，待做记 0.4 分，未标记记 0 分；练习完成单独计数。</div>
+
+        <div class="side-sticky">
+          <div class="card">
+            <div class="h3" style="margin-top:0">我的标记</div>
+            <div class="mark-row" style="flex-direction:column">
+              <button class="mark-btn ${doneTool ? "on" : ""}" data-mark="doneTool" data-t="${t.id}">✅ 已做到</button>
+              <button class="mark-btn ${todo ? "on" : ""}" data-mark="todo" data-t="${t.id}">📌 加入待做</button>
+              <button class="mark-btn fav ${fav ? "on" : ""}" data-mark="fav" data-t="${t.id}">⭐ 收藏</button>
+            </div>
+            <div class="muted mt8">已做到记 1 分，待做记 0.4 分，未标记记 0 分；练习完成单独计数。</div>
+            <div class="divider"></div>
+            <div class="muted">练习完成：${practiceCount(t)}/${t.practices.length}</div>
+            <div class="mt12"><button class="btn ghost block" data-go="tools">← 返回工具地图</button></div>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -419,33 +448,39 @@
       <div class="h1">我的清单</div>
       <div class="sub">分数反映练习进度，不评价你的思维水平。慢慢练，分就会涨。</div>
 
-      <div class="stat-grid">
-        <div class="stat"><div class="n">${total}%</div><div class="l">总进度</div></div>
-        <div class="stat"><div class="n">${donePractices}</div><div class="l">已完成练习</div></div>
-        <div class="stat"><div class="n">${doneTools}</div><div class="l">已做到工具</div></div>
-        <div class="stat"><div class="n">${todoTools}</div><div class="l">待做工具</div></div>
-        <div class="stat"><div class="n">${favTools}</div><div class="l">收藏工具</div></div>
-        <div class="stat"><div class="n">${quizTotal}</div><div class="l">检测次数</div></div>
-      </div>
+      <div class="mine-layout">
+        <div>
+          <div class="stat-grid">
+            <div class="stat"><div class="n">${total}%</div><div class="l">总进度</div></div>
+            <div class="stat"><div class="n">${donePractices}</div><div class="l">已完成练习</div></div>
+            <div class="stat"><div class="n">${doneTools}</div><div class="l">已做到工具</div></div>
+            <div class="stat"><div class="n">${todoTools}</div><div class="l">待做工具</div></div>
+            <div class="stat"><div class="n">${favTools}</div><div class="l">收藏工具</div></div>
+            <div class="stat"><div class="n">${quizTotal}</div><div class="l">检测次数</div></div>
+          </div>
 
-      <div class="card mt16">
-        <div class="h2" style="margin-top:0">各板块进度</div>
-        ${boardRows}
-      </div>
+          <div class="card mt16">
+            <div class="h2" style="margin-top:0">各板块进度</div>
+            ${boardRows}
+          </div>
+        </div>
 
-      <div class="card">
-        <div class="h2" style="margin-top:0">检测成绩</div>
-        ${best && best.score != null
-          ? `<div class="muted">最佳：${best.score}/${best.total}（${best.pct}%）· 共测 ${quizTotal} 次</div>`
-          : '<div class="muted">还没测过，去“检测”页面来一次。</div>'}
-      </div>
+        <div>
+          <div class="card">
+            <div class="h2" style="margin-top:0">检测成绩</div>
+            ${best && best.score != null
+              ? `<div class="muted">最佳：${best.score}/${best.total}（${best.pct}%）· 共测 ${quizTotal} 次</div>`
+              : '<div class="muted">还没测过，去"检测"页面来一次。</div>'}
+          </div>
 
-      ${favToolsHtml ? `<div class="card"><div class="h2" style="margin-top:0">我的收藏</div>${favToolsHtml}</div>` : ""}
+          ${favToolsHtml ? `<div class="card"><div class="h2" style="margin-top:0">我的收藏</div>${favToolsHtml}</div>` : ""}
 
-      <div class="card center">
-        <div class="h3" style="margin-top:0">关于本书与本站</div>
-        <div class="muted">本网站为学习型衍生项目。</div>
-        <button class="btn ghost block mt12" data-go="about">查看出处与版权说明</button>
+          <div class="card center">
+            <div class="h3" style="margin-top:0">关于本书与本站</div>
+            <div class="muted">本网站为学习型衍生项目。</div>
+            <button class="btn ghost block mt12" data-go="about">查看出处与版权说明</button>
+          </div>
+        </div>
       </div>
     `;
   }
