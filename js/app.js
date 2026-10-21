@@ -367,6 +367,7 @@
         <div class="quiz-expl hidden" data-expl></div>
         <button class="btn ghost block hidden" data-nextq="1">下一题</button>
       </div>`;
+    bindPage("quiz");
   }
 
   function answerQuiz(optIdx) {
@@ -420,6 +421,7 @@
         <div class="tool-card" data-tool="t05"><div class="num">05</div><div class="body"><div class="name">沉没成本</div><div class="def">已经付出且收不回来的成本，不该影响现在的决定。</div></div></div>
         <div class="tool-card" data-tool="t27"><div class="num">27</div><div class="body"><div class="name">可证伪性</div><div class="def">好理论说得出什么证据能证明它错了。</div></div></div>
       </div>`;
+    bindPage("quiz");
   }
 
   /* ---------- 我的 ---------- */
@@ -447,6 +449,7 @@
     return `
       <div class="h1">我的清单</div>
       <div class="sub">分数反映练习进度，不评价你的思维水平。慢慢练，分就会涨。</div>
+      <div class="muted" style="margin:-8px 0 12px">🔒 数据只保存在你自己的浏览器里：每个人各看各的，互不影响。</div>
 
       <div class="mine-layout">
         <div>
